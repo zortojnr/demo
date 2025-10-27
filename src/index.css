@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+/* Theme variables */
+:root {
+  /* shared */
+  --ring-color: rgba(16, 185, 129, 0.6);
+  --accent-glow: rgba(16,185,129,0.12);
+  --halo: rgba(0,0,0,0.04);
+  --text-muted: rgba(11, 15, 20, 0.65);
+
+  /* light defaults */
+  --bg: #f6f7f9; /* base-50 */
+  --text: #0b0f14; /* base-900 */
+  --card-bg: rgba(0,0,0,0.03);
+  --card-border: rgba(0,0,0,0.08);
+  --overlay-hover: rgba(0,0,0,0.05);
+  --btn-outline-border: rgba(0,0,0,0.2);
+  --btn-outline-text: #0b0f14;
+}
+
+.dark {
+  --accent-glow: rgba(16,185,129,0.08);
+  --halo: rgba(255,255,255,0.04);
+  --text-muted: rgba(255,255,255,0.70);
+
+  --bg: #0b0f14;
+  --text: #ffffff;
+  --card-bg: rgba(255,255,255,0.1);
+  --card-border: rgba(255,255,255,0.1);
+  --overlay-hover: rgba(255,255,255,0.1);
+  --btn-outline-border: rgba(255,255,255,0.2);
+  --btn-outline-text: #ffffff;
+}
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, sans-serif;
+    background-image: radial-gradient(60% 60% at 20% 10%, var(--accent-glow), transparent),
+      radial-gradient(50% 50% at 80% 30%, var(--halo), transparent);
+    background-attachment: fixed;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+}
+
+@layer components {
+  /* theme-aware text utility */
+  .text-muted { color: var(--text-muted); }
+
+  .glass-card {
+    background-color: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: 1rem; /* rounded-2xl */
+    box-shadow: 0 8px 40px rgba(16, 185, 129, 0.25);
+  }
+
+  /* Thicker background for dropdown panels to improve readability */
+  .dropdown-card {
+    background-color: rgba(0,0,0,0.6);
+    border-color: rgba(255,255,255,0.18);
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem; /* rounded-xl */
+    background-color: #10B981; /* accent */
+    color: #ffffff;
+    transition: background-color 200ms ease, box-shadow 200ms ease;
+    box-shadow: 0 8px 40px rgba(16, 185, 129, 0.25);
+  }
+  .btn-primary:hover { background-color: #0EA271; }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem; /* rounded-xl */
+    border: 1px solid var(--btn-outline-border);
+    color: var(--btn-outline-text);
+    background-color: transparent;
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+  .btn-outline:hover { background-color: var(--overlay-hover); }
+
+  /* distinct danger button for logout */
+  .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 0.75rem;
+    background-image: linear-gradient(90deg, #ef4444, #dc2626);
+    color: #ffffff;
+    box-shadow: 0 10px 32px rgba(239, 68, 68, 0.35);
+    transition: filter 180ms ease, transform 120ms ease;
+  }
+  .btn-danger:hover { filter: brightness(1.05); }
+  .btn-danger:active { transform: translateY(1px); }
+}
+
+/* Smooth focus ring */
+:focus-visible {
+  outline: 2px solid var(--ring-color);
+  outline-offset: 2px;
+}
