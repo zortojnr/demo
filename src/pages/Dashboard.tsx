@@ -18,6 +18,7 @@ import {
 } from 'recharts'
 import { Link } from 'react-router-dom'
 import { CalendarDays, Download, RefreshCcw, Bot, Sparkles } from 'lucide-react'
+import { formatNumber } from '../utils/format'
 import { 
   getSummary,
   getCharts,
@@ -148,19 +149,19 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div variants={cardVariant} initial="hidden" animate="show" className="rounded-2xl border border-emerald-500/30 bg-black/25 backdrop-blur-md p-5 shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20">
           <div className="text-sm text-white/80">🏠 Total Properties Listed</div>
-          <div className="mt-2 text-3xl font-semibold text-emerald-200">{summary ? <CountUp value={summary.totalProperties} /> : '—'}</div>
+          <div className="mt-2 text-[clamp(1.5rem,6vw,2rem)] sm:text-3xl leading-tight tracking-tight tabular-nums font-semibold text-emerald-200">{summary ? <CountUp value={summary.totalProperties} /> : '—'}</div>
         </motion.div>
         <motion.div variants={cardVariant} initial="hidden" animate="show" className="rounded-2xl border border-emerald-500/30 bg-black/25 backdrop-blur-md p-5 shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20">
           <div className="text-sm text-white/80">👥 Active Users (Agents + Clients)</div>
-          <div className="mt-2 text-3xl font-semibold text-emerald-200">{summary ? <CountUp value={summary.activeUsers} /> : '—'}</div>
+          <div className="mt-2 text-[clamp(1.5rem,6vw,2rem)] sm:text-3xl leading-tight tracking-tight tabular-nums font-semibold text-emerald-200">{summary ? <CountUp value={summary.activeUsers} /> : '—'}</div>
         </motion.div>
         <motion.div variants={cardVariant} initial="hidden" animate="show" className="rounded-2xl border border-yellow-500/40 bg-black/25 backdrop-blur-md p-5 shadow-lg shadow-yellow-500/10 hover:shadow-yellow-500/20">
           <div className="text-sm text-white/80">💰 Revenue (₦)</div>
-          <div className="mt-2 text-3xl font-semibold text-yellow-200">{summary ? `₦${summary.revenueNaira.toLocaleString('en-NG')}` : '—'}</div>
+          <div className="mt-2 text-[clamp(1.5rem,6vw,2rem)] sm:text-3xl leading-tight tracking-tight tabular-nums font-semibold text-yellow-200 overflow-hidden">{summary ? formatNumber(summary.revenueNaira, { locale: 'en-NG' }) : '—'}</div>
         </motion.div>
         <motion.div variants={cardVariant} initial="hidden" animate="show" className="rounded-2xl border border-emerald-500/30 bg-black/25 backdrop-blur-md p-5 shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20">
           <div className="text-sm text-white/80">📊 New Deals This Month</div>
-          <div className="mt-2 text-3xl font-semibold text-emerald-200">{summary ? <CountUp value={summary.newDealsThisMonth} /> : '—'}</div>
+          <div className="mt-2 text-[clamp(1.5rem,6vw,2rem)] sm:text-3xl leading-tight tracking-tight tabular-nums font-semibold text-emerald-200">{summary ? <CountUp value={summary.newDealsThisMonth} /> : '—'}</div>
         </motion.div>
       </div>
 

@@ -6,7 +6,6 @@ import {
   TrendingDown, 
   Eye, 
   Users, 
-  DollarSign, 
   Download,
   Sparkles,
   Target,
@@ -69,6 +68,12 @@ const mockData = {
 export default function AgentAnalytics() {
   const [timeFilter, setTimeFilter] = useState('30d')
   const [selectedMetric, setSelectedMetric] = useState('views')
+
+  const NairaIcon: React.FC<{ size?: number; className?: string }> = ({ size = 24, className = '' }) => (
+    <span style={{ fontSize: size, lineHeight: 1 }} className={className}>
+      ₦
+    </span>
+  )
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
@@ -172,7 +177,7 @@ export default function AgentAnalytics() {
             title: 'Revenue',
             value: `₦${formatNumber(mockData.overview.revenue)}`,
             change: mockData.overview.revenueChange,
-            icon: DollarSign,
+            icon: NairaIcon,
             color: 'gold'
           }
         ].map((metric, index) => (

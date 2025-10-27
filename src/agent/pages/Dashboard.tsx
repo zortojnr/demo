@@ -3,7 +3,6 @@ import {
   Home, 
   Users, 
   TrendingUp, 
-  DollarSign, 
   Calendar,
   Plus,
   UserPlus,
@@ -25,6 +24,12 @@ const propertyViewsData = [
 ]
 
 // removed unused revenueData
+
+const NairaIcon: React.FC<{ size?: number; className?: string }> = ({ size = 24, className = '' }) => (
+  <span style={{ fontSize: size, lineHeight: 1 }} className={className}>
+    ₦
+  </span>
+)
 
 const stats = [
   {
@@ -52,7 +57,7 @@ const stats = [
     title: 'Revenue / Deals',
     value: '₦125K',
     change: '-3%',
-    icon: DollarSign,
+    icon: NairaIcon,
     color: 'from-gold-500 to-gold-600'
   }
 ]

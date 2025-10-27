@@ -1,4 +1,4 @@
-import { Outlet, NavLink } from 'react-router-dom'
+import { Outlet, NavLink, useLocation } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
@@ -35,6 +35,7 @@ export default function AgentLayout() {
   const { user } = useAuth()
   const notifRef = useRef<HTMLDivElement | null>(null)
   const profileRef = useRef<HTMLDivElement | null>(null)
+  const location = useLocation()
 
   useEffect(() => {
     const onPointer = (e: MouseEvent | TouchEvent) => {
@@ -52,7 +53,10 @@ export default function AgentLayout() {
     document.addEventListener('touchstart', onPointer, true)
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpenMenu('none')
+      if (e.key === 'Escape') {
+        setOpenMenu('none')
+        setSidebarOpen(false)
+      }
     }
     document.addEventListener('keydown', onKey, true)
 
@@ -62,6 +66,22 @@ export default function AgentLayout() {
       document.removeEventListener('keydown', onKey, true)
     }
   }, [])
+
+  // Prevent body scroll when sidebar is open
+  useEffect(() => {
+    const body = document.body
+    if (sidebarOpen) body.style.overflow = 'hidden'
+    else body.style.overflow = ''
+    return () => { body.style.overflow = '' }
+  }, [sidebarOpen])
+
+  // Close sidebar on route change or when resizing to desktop
+  useEffect(() => { setSidebarOpen(false) }, [location.pathname])
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth >= 1024 && sidebarOpen) setSidebarOpen(false) }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [sidebarOpen])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
