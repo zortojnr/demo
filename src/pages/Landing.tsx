@@ -25,7 +25,7 @@ export default function Landing() {
           className="text-4xl md:text-6xl font-bold tracking-tight"
         >
           Smart Real Estate Automation
-          <span className="block text-muted">Powered by AI</span>
+          <span className="block text-muted">Powered by ColAI</span>
         </motion.h1>
         <motion.p
           initial={{ y: 20, opacity: 0 }}

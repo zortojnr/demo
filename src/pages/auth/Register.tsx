@@ -93,6 +93,8 @@ export default function Register() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="p-4 bg-red-600 border border-red-700 rounded-xl"
+                role="alert"
+                aria-live="polite"
               >
                 <p className="text-white text-sm">{error}</p>
               </motion.div>
@@ -107,14 +109,15 @@ export default function Register() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
                 >
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                  <label htmlFor="firstName" className="block text-sm font-medium text-slate-300 mb-2">
                     First Name
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} aria-hidden="true" />
                     <input
                       type="text"
                       name="firstName"
+                      id="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
@@ -130,14 +133,15 @@ export default function Register() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
                 >
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                  <label htmlFor="lastName" className="block text-sm font-medium text-slate-300 mb-2">
                     Last Name
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} aria-hidden="true" />
                     <input
                       type="text"
                       name="lastName"
+                      id="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
@@ -155,14 +159,15 @@ export default function Register() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
               >
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} aria-hidden="true" />
                   <input
                     type="email"
                     name="email"
+                    id="email"
                     value={formData.email}
                     onChange={handleInputChange}
                     className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
@@ -179,13 +184,14 @@ export default function Register() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
               >
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="role" className="block text-sm font-medium text-slate-300 mb-2">
                   Account Type
                 </label>
                 <div className="relative">
-                  <UserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                  <UserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} aria-hidden="true" />
                   <select
                     name="role"
+                    id="role"
                     value={formData.role}
                     onChange={handleInputChange}
                     className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300 appearance-none"
@@ -205,14 +211,15 @@ export default function Register() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6, duration: 0.5 }}
                 >
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                  <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
                     Password
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} aria-hidden="true" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       name="password"
+                      id="password"
                       value={formData.password}
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-12 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
@@ -224,6 +231,8 @@ export default function Register() {
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      aria-pressed={showPassword}
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -235,14 +244,15 @@ export default function Register() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.7, duration: 0.5 }}
                 >
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-300 mb-2">
                     Confirm Password
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} aria-hidden="true" />
                     <input
                       type={showConfirmPassword ? 'text' : 'password'}
                       name="confirmPassword"
+                      id="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-12 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
@@ -254,6 +264,8 @@ export default function Register() {
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
+                      aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                      aria-pressed={showConfirmPassword}
                     >
                       {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>

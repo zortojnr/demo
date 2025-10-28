@@ -10,14 +10,14 @@ import NotificationDropdown from '../components/ui/NotificationDropdown'
 import { useAuth } from '../contexts/AuthContext'
 
 const navItems = [
-  { to: '/app', label: 'Dashboard', icon: Gauge },
-  { to: '/app/properties', label: 'Properties', icon: Building2 },
-  { to: '/app/clients', label: 'Clients', icon: Users },
-  { to: '/app/marketing', label: 'Marketing', icon: Megaphone },
-  { to: '/app/chatbot', label: 'Chatbot', icon: Bot },
-  { to: '/app/documents', label: 'Documents', icon: FileText },
-  { to: '/app/analytics', label: 'Analytics', icon: BarChart3 },
-  { to: '/app/settings', label: 'Settings', icon: SettingsIcon },
+  { to: '/admin/dashboard', label: 'Dashboard', icon: Gauge },
+  { to: '/admin/properties', label: 'Properties', icon: Building2 },
+  { to: '/admin/clients', label: 'Clients', icon: Users },
+  { to: '/admin/marketing', label: 'Marketing', icon: Megaphone },
+  { to: '/admin/chatbot', label: 'Chatbot', icon: Bot },
+  { to: '/admin/documents', label: 'Documents', icon: FileText },
+  { to: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  { to: '/admin/settings', label: 'Settings', icon: SettingsIcon },
 ]
 
 export default function AppLayout() {

@@ -35,14 +35,20 @@ function AccordionItem({ item }: { item: FAQ }) {
       viewport={{ once: true }}
       className="glass-card p-4"
     >
-      <button onClick={() => setOpen((v) => !v)} className="w-full flex items-center justify-between text-left">
+      <button 
+        onClick={() => setOpen((v) => !v)} 
+        className="w-full flex items-center justify-between text-left"
+        aria-expanded={open}
+        aria-controls={`faq-panel-${item.q.replace(/\W+/g, '-')}`}
+      >
         <div className="font-medium">{item.q}</div>
-        <ChevronDown className={`transition ${open ? 'rotate-180' : ''}`} size={18} />
+        <ChevronDown className={`transition ${open ? 'rotate-180' : ''}`} size={18} aria-hidden="true" />
       </button>
       <motion.div
         initial={{ height: 0, opacity: 0 }}
         animate={open ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
         className="overflow-hidden"
+        id={`faq-panel-${item.q.replace(/\W+/g, '-')}`}
       >
         <div className="text-white/80 text-sm mt-2">{item.a}</div>
       </motion.div>
@@ -56,7 +62,7 @@ export default function Support() {
   return (
     <div className="relative">
       {/* Hero */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden" aria-labelledby="support-hero">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -69,7 +75,7 @@ export default function Support() {
         />
         <div className="max-w-6xl mx-auto px-6 pt-24 pb-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div>
-            <motion.h1 variants={fadeUp} initial="hidden" animate="show" className="text-4xl md:text-6xl font-bold tracking-tight">
+            <motion.h1 id="support-hero" variants={fadeUp} initial="hidden" animate="show" className="text-4xl md:text-6xl font-bold tracking-tight">
               How can we help you today?
             </motion.h1>
             <motion.p variants={fadeUp} initial="hidden" animate="show" className="mt-4 text-muted text-lg">
@@ -77,11 +83,13 @@ export default function Support() {
             </motion.p>
             <motion.div variants={fadeUp} initial="hidden" animate="show" className="mt-6">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60" size={18} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60" size={18} aria-hidden="true" />
+                <label htmlFor="support-search" className="sr-only">Search FAQs or type your question</label>
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search FAQs or type your question…"
+                  id="support-search"
                   className="pl-9 pr-3 py-3 w-full rounded-xl bg-white/10 border border-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400"
                 />
               </div>
@@ -100,8 +108,9 @@ export default function Support() {
       </section>
 
       {/* Quick Help Cards */}
-      <section id="quick" className="max-w-6xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <section id="quick" className="max-w-6xl mx-auto px-6 py-10" aria-labelledby="quick-help">
+        <h2 id="quick-help" className="sr-only">Quick Help</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {[
             { title: 'Property Listings', Icon: Home, href: '/properties' },
             { title: 'AI Assistant Help', Icon: Bot, href: '/chat' },
@@ -119,9 +128,10 @@ export default function Support() {
               viewport={{ once: true }}
               whileHover={{ scale: 1.03 }}
               className="glass-card p-4 flex items-center gap-3"
+              aria-label={title}
             >
               <div className="p-2 rounded-lg bg-white/5">
-                <Icon className="text-emerald-400" size={18} />
+                <Icon className="text-emerald-400" size={18} aria-hidden="true" />
               </div>
               <div className="font-medium">{title}</div>
             </motion.a>
@@ -130,8 +140,8 @@ export default function Support() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="max-w-6xl mx-auto px-6 py-10">
-        <motion.h3 variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="text-2xl font-semibold mb-6">
+      <section id="faq" className="max-w-6xl mx-auto px-6 py-10" aria-labelledby="faq-heading">
+        <motion.h3 id="faq-heading" variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="text-2xl font-semibold mb-6">
           Frequently Asked Questions
         </motion.h3>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -140,21 +150,21 @@ export default function Support() {
       </section>
 
       {/* AI Assistant */}
-      <section className="max-w-6xl mx-auto px-6 py-10">
+      <section className="max-w-6xl mx-auto px-6 py-10" aria-labelledby="ai-assistant">
         <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="glass-card p-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
-            <div className="text-lg font-medium">Need Instant Help?</div>
+            <h2 id="ai-assistant" className="text-lg font-medium">Need Instant Help?</h2>
             <div className="text-white/70 text-sm">Our AI Assistant is always available to guide you through property searches, bookings, and inquiries.</div>
           </div>
-          <Link to="/chat" className="btn-primary inline-flex items-center gap-2">
-            <Bot size={16} /> Chat with AI Assistant
+          <Link to="/chat" className="btn-primary inline-flex items-center gap-2" aria-label="Chat with AI Assistant">
+            <Bot size={16} aria-hidden="true" /> Chat with AI Assistant
           </Link>
         </motion.div>
       </section>
 
       {/* Support Channels */}
-      <section className="max-w-6xl mx-auto px-6 py-10">
-        <motion.h3 variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="text-2xl font-semibold mb-6">Other Ways to Reach Us</motion.h3>
+      <section className="max-w-6xl mx-auto px-6 py-10" aria-labelledby="other-channels">
+        <motion.h3 id="other-channels" variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="text-2xl font-semibold mb-6">Other Ways to Reach Us</motion.h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
             { title: 'Email', Icon: Mail, text: 'support@realestatepro.ai' },
@@ -163,7 +173,7 @@ export default function Support() {
           ].map(({ title, Icon, text }) => (
             <motion.div key={title} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="glass-card p-5">
               <div className="flex items-center gap-2">
-                <Icon className="text-emerald-400" size={18} />
+                <Icon className="text-emerald-400" size={18} aria-hidden="true" />
                 <div className="font-medium">{title}</div>
               </div>
               <div className="mt-2 text-white/80 text-sm">{text}</div>
@@ -173,14 +183,23 @@ export default function Support() {
       </section>
 
       {/* Feedback Form (Optional) */}
-      <section className="max-w-6xl mx-auto px-6 py-10">
-        <motion.form variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="glass-card p-6 space-y-4">
-          <div className="text-xl font-semibold">Feedback</div>
+      <section className="max-w-6xl mx-auto px-6 py-10" aria-labelledby="feedback-form">
+        <motion.form variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="glass-card p-6 space-y-4" aria-labelledby="feedback-form">
+          <h2 id="feedback-form" className="text-xl font-semibold">Feedback</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input className="px-3 py-2 rounded-xl bg-white/10 border border-white/10 w-full focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Name" />
-            <input className="px-3 py-2 rounded-xl bg-white/10 border border-white/10 w-full focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Email" />
+            <div>
+              <label htmlFor="fb-name" className="block text-sm text-white/80 mb-1">Name</label>
+              <input id="fb-name" className="px-3 py-2 rounded-xl bg-white/10 border border-white/10 w-full focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Your name" />
+            </div>
+            <div>
+              <label htmlFor="fb-email" className="block text-sm text-white/80 mb-1">Email</label>
+              <input id="fb-email" type="email" className="px-3 py-2 rounded-xl bg-white/10 border border-white/10 w-full focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="you@example.com" />
+            </div>
           </div>
-          <textarea rows={4} className="px-3 py-2 rounded-xl bg-white/10 border border-white/10 w-full focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Tell us what you couldn’t find or what we can improve." />
+          <div>
+            <label htmlFor="fb-message" className="block text-sm text-white/80 mb-1">Message</label>
+            <textarea id="fb-message" rows={4} className="px-3 py-2 rounded-xl bg-white/10 border border-white/10 w-full focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Tell us what you couldn’t find or what we can improve." />
+          </div>
           <div className="flex justify-end">
             <button type="button" className="btn-primary px-4 py-2">Submit Feedback</button>
           </div>
@@ -189,9 +208,9 @@ export default function Support() {
       </section>
 
       {/* Footer CTA */}
-      <section className="max-w-6xl mx-auto px-6 pb-16 text-center">
+      <section className="max-w-6xl mx-auto px-6 pb-16 text-center" aria-labelledby="support-cta">
         <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="glass-card p-8">
-          <div className="text-lg font-medium">Still need help? We’re here for you.</div>
+          <h2 id="support-cta" className="text-lg font-medium">Still need help? We’re here for you.</h2>
           <div className="mt-6 flex items-center justify-center gap-4">
             <Link to="/contact" className="btn-primary">Contact Us</Link>
             <Link to="/properties" className="btn-outline">Explore Properties</Link>
