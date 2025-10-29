@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { 
   UserPlus, Search, Filter, Edit, Trash2, Shield, Users as UsersIcon, CheckCircle, XCircle, Mail, Phone, Lock, ChevronLeft, ChevronRight
 } from 'lucide-react'
@@ -103,9 +104,8 @@ export default function AdminUsers() {
     active: users.filter(u => u.status === 'active').length,
   }), [users])
 
-  const openCreate = () => setEditState({ mode: 'create', user: undefined })
-  const openEdit = (user: AdminUser) => setEditState({ mode: 'edit', user })
-  const closeModal = () => setEditState({ mode: null })
+  // Remove unused helpers to satisfy linter
+  const closeModal = () => setEditState({ mode: null });
 
   const saveUser = (data: Omit<AdminUser, 'id' | 'lastLogin'> & { id?: string }) => {
     if (editState.mode === 'create') {
@@ -172,10 +172,10 @@ export default function AdminUsers() {
           <h1 className="text-2xl md:text-3xl font-semibold text-emerald-200">User Management</h1>
           <p className="text-slate-300">Manage all platform users — Admins, Agents, and Clients.</p>
         </div>
-        <button onClick={openCreate} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
+        <Link to="/admin/users/new" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 transition-colors">
           <UserPlus size={18} />
           + New User
-        </button>
+        </Link>
       </div>
 
       {/* Analytics Summary */}
@@ -250,9 +250,9 @@ export default function AdminUsers() {
                 <td className="p-4 text-slate-300">{u.lastLogin || '—'}</td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                    <button onClick={() => openEdit(u)} className="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
+                    <Link to={`/admin/users/edit/${u.id}`} className="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 transition-colors">
                       <Edit size={14} />
-                    </button>
+                    </Link>
                     <button onClick={() => toggleStatus(u)} className="px-2 py-1 rounded-lg bg-slate-700/30 text-slate-200 hover:bg-slate-700/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500">
                       {u.status === 'active' ? 'Deactivate' : 'Activate'}
                     </button>

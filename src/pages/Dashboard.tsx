@@ -77,18 +77,28 @@ export default function Dashboard() {
   const [loadingInsights, setLoadingInsights] = useState(false)
   const [agents, setAgents] = useState<AgentPerformance[]>([])
   const [recentProps, setRecentProps] = useState<RecentProperty[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchAll = async (r: DateRange) => {
-    const [s, c, a, rp] = await Promise.all([
-      getSummary(r),
-      getCharts(r),
-      getTopAgents(),
-      getRecentProperties(),
-    ])
-    setSummary(s)
-    setCharts(c)
-    setAgents(a)
-    setRecentProps(rp)
+    setIsLoading(true)
+    setError(null)
+    try {
+      const [s, c, a, rp] = await Promise.all([
+        getSummary(r),
+        getCharts(r),
+        getTopAgents(),
+        getRecentProperties(),
+      ])
+      setSummary(s)
+      setCharts(c)
+      setAgents(a)
+      setRecentProps(rp)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load dashboard data')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -138,6 +148,14 @@ export default function Dashboard() {
           </button>
         </div>
       </div>
+
+      {/* Loading / Error States */}
+      {isLoading && (
+        <div className="rounded-2xl border border-white/10 bg-black/30 p-4 text-white/80">Loading dashboard data…</div>
+      )}
+      {error && (
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-red-200">{error}</div>
+      )}
 
       {/* Powered by badge and quick link */}
       <div className="flex items-center justify-between">

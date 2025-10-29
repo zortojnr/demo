@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import type { UserRole } from '../contexts/AuthContext'
+// import PageSkeleton from './PageSkeleton'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -16,8 +17,21 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredRoles,
   redirectTo = '/login'
 }) => {
-  const { user, isAuthenticated, isLoading } = useAuth()
+  const { user, isAuthenticated, isLoading, refreshSession, checkSessionValidity, sessionExpiry } = useAuth()
   const location = useLocation()
+
+  // Auto-refresh session on route access
+  useEffect(() => {
+    if (isAuthenticated && sessionExpiry) {
+      // Refresh session if it's close to expiry (within 5 minutes)
+      const fiveMinutes = 5 * 60 * 1000
+      const timeUntilExpiry = new Date(sessionExpiry).getTime() - Date.now()
+      
+      if (timeUntilExpiry < fiveMinutes && timeUntilExpiry > 0) {
+        refreshSession()
+      }
+    }
+  }, [isAuthenticated, sessionExpiry, refreshSession])
 
   // Show loading spinner while checking authentication
   if (isLoading) {
@@ -31,8 +45,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     )
   }
 
-  // Redirect to login if not authenticated
-  if (!isAuthenticated || !user) {
+  // Redirect to login if not authenticated or session invalid
+  if (!isAuthenticated || !user || !checkSessionValidity()) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />
   }
 
@@ -79,7 +93,7 @@ export const MultiRoleRoute: React.FC<{
 
 // Public route component (redirects authenticated users to their dashboard)
 export const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isAuthenticated, isLoading } = useAuth()
+  const { user, isAuthenticated, isLoading, checkSessionValidity } = useAuth()
 
   if (isLoading) {
     return (
@@ -92,8 +106,8 @@ export const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children 
     )
   }
 
-  // Redirect authenticated users to their dashboard
-  if (isAuthenticated && user) {
+  // Redirect authenticated users with valid session to their dashboard
+  if (isAuthenticated && user && checkSessionValidity()) {
     const userDashboard = `/${user.role}/dashboard`
     return <Navigate to={userDashboard} replace />
   }

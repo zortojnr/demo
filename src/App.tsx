@@ -10,6 +10,7 @@ import { AuthProvider } from './contexts/AuthContext'
 const Landing = lazy(() => import('./client/pages/Landing'))
 const Login = lazy(() => import('./pages/auth/Login'))
 const Register = lazy(() => import('./pages/auth/Register'))
+const EditRegistration = lazy(() => import('./pages/auth/EditRegistration'))
 const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Properties = lazy(() => import('./pages/Properties'))
@@ -99,6 +100,8 @@ function App() {
             <Route path="settings" element={<Settings />} />
             <Route path="profile" element={<Profile />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="users/new" element={<EditRegistration />} />
+            <Route path="users/edit/:id" element={<EditRegistration />} />
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
           </Route>
 

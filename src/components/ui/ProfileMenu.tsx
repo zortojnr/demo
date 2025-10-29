@@ -19,19 +19,28 @@ export default function ProfileMenu({ open, onToggle, containerRef }: { open: bo
         onClick={onToggle}
         aria-expanded={open}
       >
-        <div className="w-8 h-8 rounded-full bg-white/20 dark:bg-white/20 grid place-items-center">
+        <div className="w-8 h-8 rounded-full bg-black/20 text-white grid place-items-center border border-white/10">
           <User size={16} />
         </div>
-        <span className="text-sm">{user?.firstName} {user?.lastName}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">{user?.firstName} {user?.lastName}</span>
+          {user?.role && (
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--accent)] text-white capitalize">{user.role}</span>
+          )}
+        </div>
         <ChevronDown size={16} className="opacity-70" />
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-64 glass-card dropdown-card p-3 z-50" role="menu" aria-label="Profile menu">
+        <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-white/10 bg-[#0b0f14]/95 p-3 z-50 shadow-lg" role="menu" aria-label="Profile menu">
           <div className="px-2 py-2">
             <div className="font-medium">{user?.firstName} {user?.lastName}</div>
-            <div className="text-muted text-sm">{user?.email}</div>
-            <div className="text-xs text-emerald-400 mt-1 capitalize">{user?.role}</div>
+            <div className="text-white/60 text-sm">{user?.email}</div>
+            {user?.role && (
+              <div className="text-[11px] text-white mt-1 inline-flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded-full bg-[var(--accent)] text-white capitalize">{user.role}</span>
+              </div>
+            )}
           </div>
           <div className="border-t border-white/10 my-2" />
           <div className="flex items-center justify-between px-2 py-2">

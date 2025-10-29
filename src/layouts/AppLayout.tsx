@@ -1,13 +1,14 @@
-import { Outlet, NavLink } from 'react-router-dom'
+import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronLeft } from 'lucide-react'
 import { Gauge, Building2, Users, Megaphone, Bot, FileText, BarChart3, Settings as SettingsIcon } from 'lucide-react'
 import ThemeToggle from '../components/ui/ThemeToggle'
 import ProfileMenu from '../components/ui/ProfileMenu'
 import ChatbotWidget from '../components/ui/ChatbotWidget'
 import NotificationDropdown from '../components/ui/NotificationDropdown'
 import { useAuth } from '../contexts/AuthContext'
+import Breadcrumbs from '../components/ui/Breadcrumbs'
 
 const navItems = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: Gauge },
@@ -26,6 +27,7 @@ export default function AppLayout() {
   const notifRef = useRef<HTMLDivElement | null>(null)
   const profileRef = useRef<HTMLDivElement | null>(null)
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const onPointer = (e: MouseEvent | TouchEvent) => {
@@ -91,7 +93,7 @@ export default function AppLayout() {
       {/* Main */}
       <div className="flex flex-col min-h-screen lg:ml-[260px]">
         <header className="sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 h-16 border-b border-white/10 bg-black/30 backdrop-blur-md">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Mobile Sidebar Toggle */}
             <button
               aria-label="Toggle sidebar"
@@ -99,6 +101,15 @@ export default function AppLayout() {
               className="lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:text-emerald-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
               {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+            {/* Back Button */}
+            <button
+              type="button"
+              aria-label="Go back"
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center justify-center h-10 w-10 rounded-lg bg-black/20 text-white hover:text-[var(--accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/60"
+            >
+              <ChevronLeft size={18} />
             </button>
             <div className="font-medium">Welcome back, {user?.firstName || 'Admin'}</div>
           </div>
@@ -117,6 +128,10 @@ export default function AppLayout() {
           </div>
         </header>
         <main className="p-4 sm:p-6">
+          {/* Breadcrumbs */}
+          <div className="mb-4">
+            <Breadcrumbs baseLabel="Admin" />
+          </div>
           <Outlet />
         </main>
         <ChatbotWidget />

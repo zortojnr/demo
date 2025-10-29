@@ -7,6 +7,8 @@
   --accent-glow: rgba(16,185,129,0.12);
   --halo: rgba(0,0,0,0.04);
   --text-muted: rgba(11, 15, 20, 0.65);
+  --accent: #0ea5a3;
+  --accent-hover: #0a8e85;
 
   /* light defaults */
   --bg: #f6f7f9; /* base-50 */
@@ -22,6 +24,8 @@
   --accent-glow: rgba(16,185,129,0.08);
   --halo: rgba(255,255,255,0.04);
   --text-muted: rgba(255,255,255,0.70);
+  --accent: #0ea5a3;
+  --accent-hover: #0a8e85;
 
   --bg: #0b0f14;
   --text: #ffffff;
@@ -75,12 +79,12 @@
     min-height: 48px; /* touch-friendly */
     min-width: 48px;  /* touch-friendly */
     border-radius: 0.75rem; /* rounded-xl */
-    background-color: #10B981; /* accent */
+    background-color: var(--accent); /* accent */
     color: #ffffff;
     transition: background-color 200ms ease, box-shadow 200ms ease;
     box-shadow: 0 8px 40px rgba(16, 185, 129, 0.25);
   }
-  .btn-primary:hover { background-color: #0EA271; }
+  .btn-primary:hover { background-color: var(--accent-hover); }
   .btn-primary:active { filter: brightness(0.98); transform: translateY(0.5px); }
   .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
 

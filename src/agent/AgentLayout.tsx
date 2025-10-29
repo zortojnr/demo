@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useLocation } from 'react-router-dom'
+import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
@@ -9,14 +9,15 @@ import {
   FileText, 
   BarChart3, 
   Settings as SettingsIcon,
-  Bell,
   User,
-  ChevronDown,
-  Menu
+  Menu,
+  X,
+  ChevronLeft
 } from 'lucide-react'
 import ThemeToggle from '../components/ui/ThemeToggle'
 import ProfileMenu from '../components/ui/ProfileMenu'
 import NotificationDropdown from '../components/ui/NotificationDropdown'
+import Breadcrumbs from '../components/ui/Breadcrumbs'
 import { useAuth } from '../contexts/AuthContext'
 
 const navItems = [
@@ -36,6 +37,7 @@ export default function AgentLayout() {
   const notifRef = useRef<HTMLDivElement | null>(null)
   const profileRef = useRef<HTMLDivElement | null>(null)
   const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const onPointer = (e: MouseEvent | TouchEvent) => {
@@ -167,7 +169,7 @@ export default function AgentLayout() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="flex items-center gap-3"
+            className="flex items-center gap-2 sm:gap-3"
           >
             {/* Mobile Sidebar Toggle */}
             <button
@@ -175,7 +177,16 @@ export default function AgentLayout() {
               onClick={() => setSidebarOpen(s => !s)}
               className="lg:hidden inline-flex items-center justify-center p-2 rounded-md bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:text-emerald-200 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
-              <Menu size={20} />
+              {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+            {/* Back Button */}
+            <button
+              type="button"
+              aria-label="Go back"
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center justify-center h-10 w-10 rounded-lg bg-black/20 text-white hover:text-[var(--accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/60"
+            >
+              <ChevronLeft size={18} />
             </button>
             <div className="text-lg lg:text-xl font-semibold text-emerald-300">
               Welcome back, {user?.firstName || 'Agent'} 👋
@@ -190,44 +201,17 @@ export default function AgentLayout() {
           >
             <ThemeToggle />
             
-            {/* Notifications */}
-            <div ref={notifRef} className="relative">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setOpenMenu(openMenu === 'notification' ? 'none' : 'notification')}
-                className="relative p-2 lg:p-3 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors duration-300 group"
-              >
-                <Bell size={20} className="text-emerald-300 group-hover:text-emerald-200" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-gold-400 rounded-full animate-pulse" />
-              </motion.button>
-              <NotificationDropdown
-                open={openMenu === 'notification'}
-                onToggle={() => setOpenMenu(openMenu === 'notification' ? 'none' : 'notification')}
-                containerRef={notifRef}
-              />
-            </div>
-
-            {/* Profile Menu */}
-            <div ref={profileRef} className="relative">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setOpenMenu(openMenu === 'profile' ? 'none' : 'profile')}
-                className="flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2 lg:py-3 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors duration-300 group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-              >
-                <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-gradient-to-r from-emerald-400 to-gold-400 flex items-center justify-center">
-                  <User size={18} className="text-slate-900" />
-                </div>
-                <span className="text-sm lg:text-base text-emerald-300 group-hover:text-emerald-200 hidden sm:block">{user?.firstName} {user?.lastName}</span>
-                <ChevronDown size={16} className="text-emerald-300 group-hover:text-emerald-200 transition-transform duration-300 group-hover:rotate-180 hidden sm:block" />
-              </motion.button>
-              <ProfileMenu
-                open={openMenu === 'profile'}
-                onToggle={() => setOpenMenu(openMenu === 'profile' ? 'none' : 'profile')}
-                containerRef={profileRef}
-              />
-            </div>
+            {/* Unified components to keep styling consistent and avoid overlap */}
+            <NotificationDropdown
+              open={openMenu === 'notification'}
+              onToggle={() => setOpenMenu(openMenu === 'notification' ? 'none' : 'notification')}
+              containerRef={notifRef}
+            />
+            <ProfileMenu
+              open={openMenu === 'profile'}
+              onToggle={() => setOpenMenu(openMenu === 'profile' ? 'none' : 'profile')}
+              containerRef={profileRef}
+            />
           </motion.div>
         </motion.header>
 
@@ -238,6 +222,9 @@ export default function AgentLayout() {
           transition={{ delay: 0.5, duration: 0.5 }}
           className="flex-1 p-4 sm:p-6 lg:p-8 xl:p-10 bg-gradient-to-br from-slate-900/50 to-slate-800/50 min-h-screen overflow-x-hidden"
         >
+          <div className="mb-4">
+            <Breadcrumbs baseLabel="Agent" />
+          </div>
           <div className="max-w-7xl mx-auto space-y-8">
             {/* Section wrapper provides consistent spacing and visual separation */}
             <div className="rounded-2xl border border-white/10 bg-black/20 backdrop-blur-md">
