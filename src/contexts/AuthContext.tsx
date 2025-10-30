@@ -287,8 +287,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setToken(null)
     setSessionExpiry(null)
     
-    // Redirect to login
-    window.location.href = '/login'
+    // Redirect to home with logout status
+    const url = new URL(window.location.href)
+    url.pathname = '/'
+    url.search = 'logout=1'
+    window.location.href = url.toString()
   }
 
   const updateUser = (userData: Partial<User>) => {

@@ -84,6 +84,7 @@ function App() {
             <Route path="documents" element={<AgentDocuments />} />
             <Route path="analytics" element={<AgentAnalytics />} />
             <Route path="settings" element={<AgentSettings />} />
+            <Route path="profile" element={<Profile />} />
             <Route path="*" element={<Navigate to="/agent/dashboard" replace />} />
           </Route>
 

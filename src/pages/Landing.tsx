@@ -1,8 +1,35 @@
 import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { ArrowRight, Mail, Lock } from 'lucide-react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useAuth, redirectToDashboard } from '../contexts/AuthContext'
 
 export default function Landing() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { login, isLoading, user } = useAuth()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const search = new URLSearchParams(location.search)
+  const loggedOut = search.get('logout') === '1'
+
+  const handleHomeLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    try {
+      await login(email, password)
+      // After login, route to appropriate dashboard
+      if (user) {
+        redirectToDashboard(user.role)
+      } else {
+        navigate('/', { replace: true })
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed')
+    }
+  }
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Animated background */}
@@ -49,6 +76,69 @@ export default function Landing() {
           <Link to="/login" className="btn-outline">
             Book Demo
           </Link>
+        </motion.div>
+
+        {/* Logout status message */}
+        {loggedOut && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.25 }}
+            className="mt-6 mx-auto max-w-md p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-200"
+            role="status"
+            aria-live="polite"
+          >
+            You have been logged out. You can sign in again below.
+          </motion.div>
+        )}
+
+        {/* Prominent Login Form on Home */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-10 mx-auto max-w-md w-full glass-card p-6"
+        >
+          <form onSubmit={handleHomeLogin} className="space-y-5">
+            {error && (
+              <div className="p-3 rounded-lg bg-[#fee2e2] border border-[#fecaca] text-[#b91c1c] text-sm">{error}</div>
+            )}
+            <div>
+              <label className="block text-sm font-medium text-muted mb-2">Email Address</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" size={18} />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-3 py-3 rounded-xl border border-white/10 bg-white/90 text-[#0b0f14] placeholder-muted focus:outline-none focus:ring-2 focus:ring-[var(--ring-color)] focus:ring-offset-2"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-muted mb-2">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" size={18} />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-3 py-3 rounded-xl border border-white/10 bg-white/90 text-[#0b0f14] placeholder-muted focus:outline-none focus:ring-2 focus:ring-[var(--ring-color)] focus:ring-offset-2"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Signing in…' : 'Sign In'}
+            </button>
+          </form>
         </motion.div>
 
         {/* 3D-esque cityscape mock */}

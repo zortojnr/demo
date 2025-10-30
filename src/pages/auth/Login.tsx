@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { FormEvent, ChangeEvent } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, ArrowRight, ChevronLeft } from 'lucide-react'
 import { PRODUCT_NAME, COMPANY_NAME } from '../../shared/config'
 import { useAuth } from '../../contexts/AuthContext'
 
@@ -50,6 +50,22 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center p-4 relative">
+      {/* Top-left Back Button */}
+      {(() => {
+        const hasHistory = window.history.length > 1
+        const fromState = !!from
+        const canGoBack = hasHistory || fromState
+        return canGoBack ? (
+          <button
+            type="button"
+            aria-label="Go back"
+            onClick={() => navigate(-1)}
+            className="fixed left-3 top-3 sm:left-5 sm:top-5 z-50 inline-flex items-center justify-center h-12 w-12 sm:h-11 sm:w-11 rounded-full bg-black/40 text-white shadow-md backdrop-blur-md border border-white/20 hover:bg-black/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/60"
+          >
+            <ChevronLeft size={20} />
+          </button>
+        ) : null
+      })()}
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}

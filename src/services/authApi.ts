@@ -1,4 +1,22 @@
-import type { User, RegisterData } from '../contexts/AuthContext'
+import type { User, RegisterData, Permission, UserRole } from '../contexts/AuthContext'
+
+// Role-based permissions mapping (aligned with AuthContext)
+const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
+  admin: [
+    'users.create', 'users.read', 'users.update', 'users.delete',
+    'properties.create', 'properties.read', 'properties.update', 'properties.delete',
+    'clients.create', 'clients.read', 'clients.update', 'clients.delete',
+    'analytics.read', 'settings.update', 'marketing.manage'
+  ],
+  agent: [
+    'properties.create', 'properties.read', 'properties.update', 'properties.delete',
+    'clients.create', 'clients.read', 'clients.update', 'clients.delete',
+    'analytics.read', 'marketing.manage'
+  ],
+  client: [
+    'properties.read', 'clients.read'
+  ]
+}
 
 // Mock user database
 const mockUsers: User[] = [
@@ -7,21 +25,27 @@ const mockUsers: User[] = [
     email: 'admin@demo.com',
     firstName: 'Admin',
     lastName: 'User',
-    role: 'admin'
+    role: 'admin',
+    permissions: ROLE_PERMISSIONS['admin'],
+    lastActivity: new Date()
   },
   {
     id: '2',
     email: 'agent@demo.com',
     firstName: 'Agent',
     lastName: 'Smith',
-    role: 'agent'
+    role: 'agent',
+    permissions: ROLE_PERMISSIONS['agent'],
+    lastActivity: new Date()
   },
   {
     id: '3',
     email: 'client@demo.com',
     firstName: 'John',
     lastName: 'Doe',
-    role: 'client'
+    role: 'client',
+    permissions: ROLE_PERMISSIONS['client'],
+    lastActivity: new Date()
   }
 ]
 
@@ -107,7 +131,9 @@ export const registerApi = async (userData: RegisterData): Promise<RegisterRespo
     email: userData.email,
     firstName: userData.firstName,
     lastName: userData.lastName,
-    role: userData.role
+    role: userData.role,
+    permissions: ROLE_PERMISSIONS[userData.role],
+    lastActivity: new Date()
   }
 
   // Add to mock database
@@ -210,7 +236,9 @@ export const createUserApi = async (
     email: userData.email,
     firstName: userData.firstName,
     lastName: userData.lastName,
-    role: userData.role
+    role: userData.role,
+    permissions: ROLE_PERMISSIONS[userData.role],
+    lastActivity: new Date()
   }
 
   // Add to mock database

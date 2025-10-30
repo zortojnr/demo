@@ -1,9 +1,9 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
+import type { TouchEvent as ReactTouchEvent } from 'react'
 import { motion } from 'framer-motion'
 import { Menu, X, ChevronLeft } from 'lucide-react'
 import { Gauge, Building2, Users, Megaphone, Bot, FileText, BarChart3, Settings as SettingsIcon } from 'lucide-react'
-import ThemeToggle from '../components/ui/ThemeToggle'
 import ProfileMenu from '../components/ui/ProfileMenu'
 import ChatbotWidget from '../components/ui/ChatbotWidget'
 import NotificationDropdown from '../components/ui/NotificationDropdown'
@@ -24,14 +24,14 @@ const navItems = [
 export default function AppLayout() {
   const [openMenu, setOpenMenu] = useState<'none' | 'notification' | 'profile'>('none')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 1024)
   const notifRef = useRef<HTMLDivElement | null>(null)
   const profileRef = useRef<HTMLDivElement | null>(null)
   const { user } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
-    const onPointer = (e: MouseEvent | TouchEvent) => {
-      const target = e.target as Node | null
+    const handleCommon = (target: Node | null) => {
       if (!target) return
       const insideNotif = !!notifRef.current && notifRef.current.contains(target)
       const insideProfile = !!profileRef.current && profileRef.current.contains(target)
@@ -43,29 +43,64 @@ export default function AppLayout() {
     }
 
     // Use mousedown and touchstart for immediate response across browsers
-    document.addEventListener('mousedown', onPointer, true)
-    document.addEventListener('touchstart', onPointer, true)
+    const onMouseDown = (e: MouseEvent) => {
+      handleCommon(e.target as Node | null)
+    }
+    const onTouchStartDoc = (e: TouchEvent) => {
+      handleCommon(e.target as Node | null)
+    }
 
     // Accessibility: close with Escape
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpenMenu('none')
     }
+    document.addEventListener('mousedown', onMouseDown, true)
+    document.addEventListener('touchstart', onTouchStartDoc, true)
     document.addEventListener('keydown', onKey, true)
 
     return () => {
-      document.removeEventListener('mousedown', onPointer, true)
-      document.removeEventListener('touchstart', onPointer, true)
+      document.removeEventListener('mousedown', onMouseDown, true)
+      document.removeEventListener('touchstart', onTouchStartDoc, true)
       document.removeEventListener('keydown', onKey, true)
     }
   }, [])
+
+  useEffect(() => {
+    const onResize = () => {
+      const w = window.innerWidth
+      setIsDesktop(w >= 1024)
+      if (w >= 1024 && sidebarOpen) setSidebarOpen(false)
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [sidebarOpen])
+
+  // Touch gesture to close sidebar by swiping left
+  const touchStartX = useRef<number | null>(null)
+  const onAsideTouchStart = (e: ReactTouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null
+  }
+  const onAsideTouchEnd = (e: ReactTouchEvent) => {
+    if (touchStartX.current == null) return
+    const endX = e.changedTouches[0]?.clientX ?? touchStartX.current
+    const deltaX = endX - touchStartX.current
+    if (deltaX < -50 && !isDesktop) setSidebarOpen(false)
+    touchStartX.current = null
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Sidebar (desktop fixed, mobile slide-over) */}
       <motion.aside
         initial={{ x: -260 }}
-        animate={{ x: sidebarOpen ? 0 : -260 }}
+        animate={{ x: isDesktop ? 0 : (sidebarOpen ? 0 : -260) }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
-        className="fixed left-0 top-0 h-full w-[260px] border-r border-white/10 bg-black/50 backdrop-blur-md shadow-2xl z-40 lg:translate-x-0"
+        className="fixed left-0 top-0 h-full w-[260px] border-r border-white/10 bg-black/50 backdrop-blur-md shadow-2xl z-40"
+        role="navigation"
+        aria-label="Admin sidebar"
+        aria-hidden={!isDesktop && !sidebarOpen}
+        id="admin-sidebar"
+        onTouchStart={onAsideTouchStart}
+        onTouchEnd={onAsideTouchEnd}
       >
         <div className="px-6 py-6 border-b border-white/10">
           <div className="text-xl font-semibold">Smart Real Estate</div>
@@ -92,29 +127,32 @@ export default function AppLayout() {
 
       {/* Main */}
       <div className="flex flex-col min-h-screen lg:ml-[260px]">
-        <header className="sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 h-16 border-b border-white/10 bg-black/30 backdrop-blur-md">
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Mobile Sidebar Toggle */}
-            <button
-              aria-label="Toggle sidebar"
-              onClick={() => setSidebarOpen(s => !s)}
-              className="lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:text-emerald-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-            >
-              {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
+        <header className="sticky top-0 z-50 flex items-center justify-between px-3 sm:px-6 h-16 border-b border-white/10 bg-black/30 backdrop-blur-md">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            {/* Mobile/Tablet Sidebar Toggle */}
+            {!isDesktop && (
+              <button
+                aria-label="Toggle sidebar"
+                aria-expanded={sidebarOpen}
+                aria-controls="admin-sidebar"
+                onClick={() => setSidebarOpen(s => !s)}
+              className="inline-flex items-center justify-center h-10 w-10 rounded-lg bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:text-emerald-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 shrink-0"
+              >
+                {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+              </button>
+            )}
             {/* Back Button */}
             <button
               type="button"
               aria-label="Go back"
               onClick={() => navigate(-1)}
-              className="inline-flex items-center justify-center h-10 w-10 rounded-lg bg-black/20 text-white hover:text-[var(--accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/60"
+              className="inline-flex items-center justify-center h-10 w-10 rounded-lg bg-black/20 text-white hover:text-[var(--accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/60 shrink-0"
             >
               <ChevronLeft size={18} />
             </button>
-            <div className="font-medium">Welcome back, {user?.firstName || 'Admin'}</div>
+            <div className="text-sm sm:text-base font-medium truncate max-w-[55vw] sm:max-w-none">Welcome back, {user?.firstName || 'Admin'}</div>
           </div>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
+          <div className="flex items-center gap-3 sm:gap-4">
             <NotificationDropdown
               open={openMenu === 'notification'}
               onToggle={() => setOpenMenu(openMenu === 'notification' ? 'none' : 'notification')}
@@ -138,7 +176,7 @@ export default function AppLayout() {
       </div>
 
       {/* Mobile overlay when sidebar is open */}
-      {sidebarOpen && (
+      {!isDesktop && sidebarOpen && (
         <button
           aria-label="Close sidebar"
           onClick={() => setSidebarOpen(false)}
